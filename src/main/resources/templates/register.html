@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全国美食鉴赏系统 - Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .title {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .login-container {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .login-container h2 {
+            color: #333;
+        }
+
+        .login-form {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 95%;
+            padding: 7px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .register-link {
+            display: block;
+            margin-top: 10px;
+            color: #4caf50;
+            text-decoration: none;
+        }
+    </style>
+    <script>
+        function validateForm() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            // 验证用户名和密码长度
+            if (!validateLength(username, 5, 10) || !validateLength(password, 5, 10)) {
+                document.getElementById("lengthError").style.display = "block";
+                return false;
+            } else {
+                document.getElementById("lengthError").style.display = "none";
+                return true;
+            }
+        }
+
+        function validateLength(value, minLength, maxLength) {
+            return value.length >= minLength && value.length <= maxLength;
+        }
+    </script>
+</head>
+<body>
+<div class="title">
+    <h1>全国美食鉴赏系统</h1>
+</div>
+<div class="login-container">
+    <h2>注册</h2>
+    <form class="login-form" action="./register" method="post" th:action="@{./register}">
+        <div class="form-group">
+            <label for="name">姓名:</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <p id="lengthError" style="color: red; display: none;">用户名和密码必须在5-10个字符之间。</p>
+        <div class="form-group">
+            <button type="submit" onclick="return validateForm()">注册</button>
+        </div>
+    </form>
+    <a class="register-link" href="./" th:href="@{./}">已有账号？立即登录</a>
+</div>
+</body>
+</html>
