@@ -11,9 +11,9 @@ public class Food {
     private Long id;
     private String foodName;    // 食物名称
     private String description; // 食物描述
+    private String image_path;   // 食物图片
 
-    // 上传食物图片
     @TableField("User")
-    private Long userId;
+    private Long user_id;
 
 }
