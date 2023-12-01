@@ -25,7 +25,7 @@ public class UserController {
     @Autowired
     IUserService userService;
 
-    String USERNAME;
+    Long USER_ID;
 
     @GetMapping()
     String loginPage() {
@@ -36,7 +36,7 @@ public class UserController {
     String login(@RequestParam String username, @RequestParam String password) {
         boolean loginSuccessful = loginJudge(username, password);
         if(loginSuccessful) {
-            USERNAME = username;
+            USER_ID  = getIDbyUsername(username);
             return "list";
         }
         else
@@ -87,15 +87,12 @@ public class UserController {
             String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
             File dest = new File(pathName);
             file.transferTo(dest);
+
             // 将头像的文件路径保存到数据库中
             User newUser = new User();
+            newUser.setId(USER_ID);
             newUser.setUser_image_path(pathName);
-            UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-            updateWrapper.eq("username", USERNAME);  // 设置更新条件，假设根据 ID 更新
-            userService.update(newUser, updateWrapper);
-
-
-
+            userService.updateById(newUser);
 
             return ResponseEntity.ok("上传成功!");
         } catch (IOException e) {
@@ -114,6 +111,11 @@ public class UserController {
         return user != null;
     }
 
-
+    public Long getIDbyUsername(String username){
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("username", username);
+        User user = userService.getOne(queryWrapper);
+        return user.getId();
+    }
     //public void addPathToDB();
 }

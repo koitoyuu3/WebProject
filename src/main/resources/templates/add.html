@@ -59,6 +59,33 @@
             padding: 10px;
             text-align: center;
         }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 95%;
+            padding: 7px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .form-group button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -73,15 +100,20 @@
 </nav>
 
 <section>
-    <article>
-        <h2>最新消息</h2>
-        <p>欢迎来到全国美食鉴赏系统，发现各地的美食文化。</p>
-    </article>
-
-    <article>
-        <h2>我们的服务</h2>
-        <p>提供全面的美食信息，包括各地特色菜肴、餐馆推荐和美食文化。</p>
-    </article>
+    <form action="./add" method="post" th:action="@{./add}">
+        <div class="form-group">
+            <label for="foodName">美食名称:</label>
+            <input type="text" class="form-control" id="foodName" name="foodName">
+        </div>
+        <div class="form-group">
+            <label for="description">美食描述:</label>
+            <input type="text" class="form-control" id="description" name="description">
+        </div>
+        <!-- 上传食物图片 -->
+        <div class="form-group">
+            <button type="submit">提交</button>
+        </div>
+    </form>
 </section>
 
 <footer>
