@@ -13,7 +13,7 @@ public class Food {
     private String description; // 食物描述
     private String image_path;   // 食物图片
 
-    @TableField("User")
+    @TableField("user_id")
     private Long user_id;
 
 }

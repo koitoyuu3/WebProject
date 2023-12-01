@@ -15,7 +15,7 @@ CREATE TABLE food (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
                       food_name VARCHAR(255),
                       description VARCHAR(255),
-                      image_path VARCHAR(255) DEFAULT NULL,
-                      user_id BIGINT,
+                      image_path VARCHAR(255) DEFAULT '00000',
+                      user_id BIGINT default 0,
                       FOREIGN KEY (user_id) REFERENCES user(id)
 );

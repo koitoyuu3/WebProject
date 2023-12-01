@@ -77,13 +77,14 @@
             border-radius: 4px;
         }
 
-        .form-group button {
+        button {
             background-color: #4caf50;
             color: #fff;
             border: none;
             padding: 10px;
             border-radius: 4px;
             cursor: pointer;
+            margin-bottom:20px;
         }
 
     </style>
@@ -95,12 +96,18 @@
 </header>
 
 <nav>
-    <a href="#">主页</a>
+    <a href="./list.html" th:href="@{./main}">主页</a>
     <a href="./person.html" style="float: right;" th:href="@{./person}">个人中心</a>
 </nav>
 
 <section>
-    <form action="./add" method="post" th:action="@{./add}">
+    <label for="image-input">
+        <button onclick="clickUpload()">上传图片</button>
+    </label>
+    <input type="file" id="image-input" style="display: none" onchange="uploadFoodImage()">
+    <div id="result"></div>
+
+    <form action="./person" method="post" th:action="@{./person}" onsubmit="return validateForm()">
         <div class="form-group">
             <label for="foodName">美食名称:</label>
             <input type="text" class="form-control" id="foodName" name="foodName">
@@ -109,17 +116,60 @@
             <label for="description">美食描述:</label>
             <input type="text" class="form-control" id="description" name="description">
         </div>
-        <!-- 上传食物图片 -->
         <div class="form-group">
             <button type="submit">提交</button>
         </div>
     </form>
 </section>
+<script>
+    function clickUpload() {
+        // Event.preventDefault();
+        var fileInput = document.getElementById('image-input');
+        fileInput.click(); // 手动触发文件输入框的点击事件
+    }
+    function uploadFoodImage() {
+        var fileInput = document.getElementById('image-input');
+        var file = fileInput.files[0];
+
+        if (file) {
+            var formData = new FormData();
+            formData.append('image', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/uploadFoodImage', true);
+
+            // 处理上传完成后的回调
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('result').innerHTML = '上传成功!';
+                } else {
+                    document.getElementById('result').innerHTML = '上传失败!';
+                }
+            };
+
+            // 发送请求
+            xhr.send(formData);
+        } else {
+            alert('请选择要上传的图片');
+        }
+    }
+
+    function validateForm() {
+        var foodName = document.getElementById('foodName').value;
+        var description = document.getElementById('description').value;
+
+        if (foodName.trim() === '' || description.trim() === '') {
+            alert('美食名称和描述不能为空');
+            return false; // 阻止表单提交
+        }
+
+        return true; // 允许表单提交
+    }
+</script>
 
 <footer>
     &copy; 2023 全国美食鉴赏系统. 保留所有权利.
 </footer>
-
 </body>
 </html>
 

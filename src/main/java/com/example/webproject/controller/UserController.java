@@ -2,8 +2,10 @@ package com.example.webproject.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.example.webproject.entity.Food;
 import com.example.webproject.entity.User;
 import com.example.webproject.mapper.UserMapper;
+import com.example.webproject.service.IFoodService;
 import com.example.webproject.service.IUserService;
 import com.example.webproject.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,14 +20,20 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class UserController {
     @Autowired
     IUserService userService;
+    @Autowired
+    IFoodService foodService;
 
     Long USER_ID;
+
+    String FOODPATH;
 
     @GetMapping()
     String loginPage() {
@@ -55,9 +63,12 @@ public class UserController {
         user.setUsername(username);
         user.setPassword(password);
         userService.save(user);
+        USER_ID  = getIDbyUsername(username);
         return "list";
     }
 
+    @GetMapping("/main")
+    String mainPage() {return "list"; }
     @GetMapping("/person")
     String personPage() {
         return "person";
@@ -68,8 +79,34 @@ public class UserController {
         return "add";
     }
 
-    @PostMapping("/uploadImage")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("image") MultipartFile file) {
+
+
+    @PostMapping("/person")
+    String addFood(@RequestParam String foodName, @RequestParam String description ){
+        Food food = new Food();
+        food.setFoodName(foodName);
+        food.setDescription(description);
+        food.setUser_id(USER_ID);
+        food.setImage_path(FOODPATH);
+        foodService.save(food);
+
+        // 将食物整合到用户数据库
+        User curUser = userService.getById(USER_ID);
+        List<Food> foodList = curUser.getFoods();
+
+        if (foodList == null) {
+            foodList = new ArrayList<>();
+            curUser.setFoods(foodList);
+        }
+
+        foodList.add(food);
+        userService.updateById(curUser);
+        return "./person";
+    }
+
+
+    @PostMapping("/uploadUserImage")
+    public ResponseEntity<String> UserUpload(@RequestParam("image") MultipartFile file) {
         if (file.isEmpty()) {
             return ResponseEntity.badRequest().body("请选择要上传的图片");
         }
@@ -85,6 +122,7 @@ public class UserController {
 
             String fileName = file.getOriginalFilename();
             String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
+            //FOODPATH = pathName;
             File dest = new File(pathName);
             file.transferTo(dest);
 
@@ -101,6 +139,33 @@ public class UserController {
         }
     }
 
+    @PostMapping("/uploadFoodImage")
+    public ResponseEntity<String> FoodUpload(@RequestParam("image") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("请选择要上传的图片");
+        }
+
+        try {
+            // 保存文件到服务器的指定目录，这里保存 "uploads" 文件夹中
+            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/uploads/";
+            File uploadPath = new File(uploadDir);
+
+            if (!uploadPath.exists()) {
+                uploadPath.mkdirs();
+            }
+
+            String fileName = file.getOriginalFilename();
+            String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
+            FOODPATH = pathName;
+            File dest = new File(pathName);
+            file.transferTo(dest);
+
+            return ResponseEntity.ok("上传成功!");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("上传失败!");
+        }
+    }
     public boolean loginJudge(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username)

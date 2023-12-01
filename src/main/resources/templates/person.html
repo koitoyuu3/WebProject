@@ -84,6 +84,7 @@
 </header>
 
 <nav>
+    <a href="./list.html" th:href="@{./main}">主页</a>
     <a href="#">个人信息</a>
     <a href="./add" th:action="@{./add}">增加数据</a>
     <a href="#" class="logout" onclick="logout()">退出登录</a>
@@ -96,7 +97,7 @@
         <label for="image-input">
         <button onclick="clickUpload()">上传头像</button>
         </label>
-        <input type="file" id="image-input" style="display: none" onchange="uploadImage()">
+        <input type="file" id="image-input" style="display: none" onchange="uploadUserImage()">
         <button onclick="queryData()">查询数据</button>
 
     </aside>
@@ -113,15 +114,12 @@
 
 <script>
     function clickUpload() {
+        // Event.preventDefault();
         var fileInput = document.getElementById('image-input');
         fileInput.click(); // 手动触发文件输入框的点击事件
     }
-    function logout() {
-        // 实现退出登录的逻辑
-        alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
-    }
 
-    function uploadImage() {
+    function uploadUserImage() {
         var fileInput = document.getElementById('image-input');
         var file = fileInput.files[0];
 
@@ -130,7 +128,7 @@
             formData.append('image', file);
 
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/uploadImage', true);
+            xhr.open('POST', '/uploadUserImage', true);
 
             // 处理上传完成后的回调
             xhr.onload = function () {
@@ -147,7 +145,6 @@
             alert('请选择要上传的图片');
         }
     }
-
 
     function queryData() {
         // 使用 Fetch API 发起查询数据的异步请求
@@ -185,8 +182,10 @@
         });
     }
 
-
+    function logout() {
+        // 实现退出登录的逻辑
+        alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
+    }
 </script>
-
 </body>
 </html>
