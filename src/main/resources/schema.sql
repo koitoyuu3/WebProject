@@ -4,7 +4,7 @@ CREATE TABLE user (
                       name VARCHAR(255),
                       username VARCHAR(255),
                       password VARCHAR(255),
-                      userimagepath VARCHAR(1023) DEFAULT '00000',
+                      userimagepath VARCHAR(1023) DEFAULT '/uploads/autouser.jpg',
 
                     PRIMARY KEY (id)
 
@@ -15,7 +15,7 @@ CREATE TABLE food (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
                       foodname VARCHAR(255),
                       description VARCHAR(255),
-                      imagepath VARCHAR(255) DEFAULT '00000',
+                      imagepath VARCHAR(255) DEFAULT '/uploads/autofood.jpg',
                       userid BIGINT default 0,
                       FOREIGN KEY (userid) REFERENCES user(id)
 );

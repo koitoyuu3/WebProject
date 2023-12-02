@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,20 +31,22 @@ public class UserController {
 
     String FOODPATH;
 
-    @GetMapping()
+    @GetMapping("/login")
     String loginPage() {
         return "login";
     }
 
-    @PostMapping()
-    String login(@RequestParam String username, @RequestParam String password) {
+    @PostMapping("/login")
+    String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
         boolean loginSuccessful = loginJudge(username, password);
         if(loginSuccessful) {
             USER_ID  = getIDbyUsername(username);
-            return "list";
+            session.setAttribute("username", username);
+            session.setAttribute("password", password);
+            return "redirect:/main";
         }
         else
-            return "redirect:/";
+            return "redirect:/login";
     }
 
     @GetMapping("/register")
@@ -52,14 +55,16 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    String register(@RequestParam String username, @RequestParam String password, @RequestParam String name) {
+    String register(@RequestParam String username, @RequestParam String password, @RequestParam String name, HttpSession session) {
         User user = new User();
         user.setName(name);
         user.setUsername(username);
         user.setPassword(password);
+        session.setAttribute("username", username);
+        session.setAttribute("password", password);
         userService.save(user);
         USER_ID  = getIDbyUsername(username);
-        return "list";
+        return "redirect:/main";
     }
 
     @GetMapping("/main")
@@ -67,6 +72,12 @@ public class UserController {
     @GetMapping("/person")
     String personPage() {
         return "person";
+    }
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpSession session) {
+        // 销毁session
+        session.invalidate();
+        return ResponseEntity.noContent().build();
     }
     @GetMapping("/getUserInfo")
     @ResponseBody

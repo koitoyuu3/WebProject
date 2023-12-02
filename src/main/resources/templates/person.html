@@ -39,11 +39,13 @@
 
         section {
             display: flex;
+            height:800px;
         }
 
         aside {
             width: 7%;
             padding-right: 20px;
+
         }
 
         main {
@@ -65,6 +67,8 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
         table, th, td {
@@ -82,6 +86,21 @@
             aspect-ratio: 1/1; /* CSS Aspect Ratio property, if supported */
         }
 
+        #userData {
+            margin-top: 20px;
+        }
+
+        #result {
+            margin-top: 10px;
+            color: #4caf50;
+            font-weight: bold;
+        }
+        #divider {
+            width: 10px;
+            height: 100%;
+            background-color: #333; /* 分隔线颜色 */
+            float: left; /* 使分隔线浮动到左侧 */
+        }
     </style>
 </head>
 <body>
@@ -94,7 +113,7 @@
     <a href="./list.html" th:href="@{./main}">主页</a>
     <a onclick="showUserInfo()">个人信息</a>
     <a href="./add" th:action="@{./add}">增加数据</a>
-    <a href="#" class="logout" onclick="logout()">退出登录</a>
+    <a href="./login" class="logout" onclick="logout()" th:action="@{./add}">退出登录</a>
 </nav>
 
 <section>
@@ -105,13 +124,13 @@
         <button onclick="clickUpload()">上传头像</button>
         </label>
         <input type="file" id="image-input" style="display: none" onchange="uploadUserImage()">
-        <button onclick="queryData()">查询数据</button>
 
     </aside>
 
+    <div id="divider"></div>
+
     <main>
         <!-- 右侧栏 -->
-        <h2>用户添加的所有数据</h2>
         <table id="userData">
             <!-- 用户数据将显示在这里 -->
         </table>
@@ -163,6 +182,10 @@
             // 创建一个用于显示食物项的表格
             var table = document.createElement('table');
             var tbody = table.createTBody();
+
+            // 添加表格标题
+            var caption = table.createCaption();
+            caption.innerHTML = '您推荐的美食';
 
             // 遍历食物项
             foodItems.forEach(food => {
@@ -222,21 +245,20 @@
         }
     }
 
-    function queryData() {
-        // 使用 Fetch API 发起查询数据的异步请求
-        fetch('https://api.example.com/query-data')
-            .then(response => response.json())
-            .then(data => {
-                // 处理查询结果
-                displayQueryResult(data);
-            })
-            .catch(error => console.error('Error querying data: ', error));
-    }
-
-
-
     function logout() {
-        // 实现退出登录的逻辑
+        fetch('/logout', {
+            method: 'POST',
+        })
+            .then(response => {
+                if (response.ok) {
+                    // 注销成功，可以执行前端的一些处理，比如跳转到登录页面
+                    window.location.href = '/login';
+                } else {
+                    // 注销失败，可以进行相应的处理
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => console.error('Error during logout:', error));
         alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
     }
     function showUserInfo() {
