@@ -120,6 +120,75 @@
 </section>
 
 <script>
+    // 在页面加载时加载所有食物项
+    window.onload = function() {
+        loadAllFood();
+    };
+
+    function loadAllFood() {
+        // 从服务器获取所有食物项
+        fetch('/getAllFoodByUser')  // 请根据实际端点修改路径
+            .then(response => {
+                // 检查响应类型
+                if (!response.ok) {
+                    throw new Error('服务器响应错误');
+                }
+                const contentType = response.headers.get('content-type');
+
+                if (contentType && contentType.includes('application/json')) {
+                    return response.json();
+                } else {
+                    // 如果不是JSON，直接返回响应的文本
+                    return response.text();
+                }
+            })
+            .then(data => {
+                // 显示食物项
+                displayFoodItems(data);
+            })
+            .catch(error => console.error('获取食物项时出错: ', error));
+    }
+
+    function displayFoodItems(foodItems) {
+        // 在主内容区域显示食物项
+        var mainContent = document.getElementById('userData');
+        mainContent.innerHTML = ''; // 清除之前的内容
+
+        if (typeof foodItems === 'string' && foodItems === '暂未添加食物') {
+            // 如果接收到的数据是暂未添加食物的字符串，直接显示这个消息
+            var noDataMessage = document.createElement('p');
+            noDataMessage.innerHTML = '暂未添加食物';
+            mainContent.appendChild(noDataMessage);
+        }  else {
+            // 创建一个用于显示食物项的表格
+            var table = document.createElement('table');
+            var tbody = table.createTBody();
+
+            // 遍历食物项
+            foodItems.forEach(food => {
+                var tr = tbody.insertRow();
+
+                // 创建表格单元格
+                var nameCell = tr.insertCell();
+                nameCell.innerHTML = food.foodname;
+
+                var descriptionCell = tr.insertCell();
+                descriptionCell.innerHTML = food.description;
+
+                var imageCell = tr.insertCell();
+                imageCell.innerHTML = `<img src="${food.imagepath}" alt="${food.foodname}" >`;
+            });
+
+            // 将表格添加到主内容区域
+            mainContent.appendChild(table);
+        }
+
+        // 显示结果消息
+        var resultArea = document.getElementById('result');
+        resultArea.innerHTML = '所有食物加载成功!';
+    }
+
+
     function clickUpload() {
         // Event.preventDefault();
         var fileInput = document.getElementById('image-input');

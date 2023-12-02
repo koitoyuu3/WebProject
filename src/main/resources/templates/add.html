@@ -109,8 +109,8 @@
 
     <form action="./person" method="post" th:action="@{./person}" onsubmit="return validateForm()">
         <div class="form-group">
-            <label for="foodName">美食名称:</label>
-            <input type="text" class="form-control" id="foodName" name="foodName">
+            <label for="foodname">美食名称:</label>
+            <input type="text" class="form-control" id="foodname" name="foodname">
         </div>
         <div class="form-group">
             <label for="description">美食描述:</label>
@@ -155,10 +155,10 @@
     }
 
     function validateForm() {
-        var foodName = document.getElementById('foodName').value;
+        var foodname = document.getElementById('foodname').value;
         var description = document.getElementById('description').value;
 
-        if (foodName.trim() === '' || description.trim() === '') {
+        if (foodname.trim() === '' || description.trim() === '') {
             alert('美食名称和描述不能为空');
             return false; // 阻止表单提交
         }

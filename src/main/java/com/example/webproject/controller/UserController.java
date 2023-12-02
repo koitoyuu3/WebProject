@@ -6,6 +6,7 @@ import com.example.webproject.entity.User;
 import com.example.webproject.service.IFoodService;
 import com.example.webproject.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Controller
 @RequestMapping("/")
@@ -73,6 +75,24 @@ public class UserController {
         User curUser = userService.getById(USER_ID);
         return curUser;
     }
+    @GetMapping("/getAllFoodByUser")
+    public ResponseEntity<?> getFoodByUser() {
+        // List<T> list(Wrapper<T> queryWrapper);
+        try {
+            QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("userid", USER_ID);
+            List<Food> foodList = foodService.list(queryWrapper);
+
+            if (foodList == null) {
+                return ResponseEntity.ok("暂未添加食物");
+            } else {
+                return ResponseEntity.ok(foodList);
+            }
+        } catch (Exception e) {
+            // 处理异常，例如日志记录
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
 
     @GetMapping("/add")
@@ -83,12 +103,12 @@ public class UserController {
 
 
     @PostMapping("/person")
-    String addFood(@RequestParam String foodName, @RequestParam String description ){
+    String addFood(@RequestParam String foodname, @RequestParam String description ){
         Food food = new Food();
-        food.setFoodName(foodName);
+        food.setFoodname(foodname);
         food.setDescription(description);
-        food.setUser_id(USER_ID);
-        food.setImage_path(FOODPATH);
+        food.setUserid(USER_ID);
+        food.setImagepath(FOODPATH);
         foodService.save(food);
 
         // 将食物整合到用户数据库
@@ -102,7 +122,7 @@ public class UserController {
 
         foodList.add(food);
         userService.updateById(curUser);
-        return "./person";
+        return "redirect:/person";
     }
 
 
@@ -124,7 +144,7 @@ public class UserController {
             String fileName = file.getOriginalFilename();
             String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
             String savePathName = "/uploads/" + fileName;
-            //FOODPATH = pathName;
+            // FOODPATH = pathName;
             File dest = new File(pathName);
             file.transferTo(dest);
 
@@ -149,7 +169,7 @@ public class UserController {
 
         try {
             // 保存文件到服务器的指定目录，这里保存 "uploads" 文件夹中
-            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/uploads/";
+            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
             File uploadPath = new File(uploadDir);
 
             if (!uploadPath.exists()) {
@@ -158,7 +178,8 @@ public class UserController {
 
             String fileName = file.getOriginalFilename();
             String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
-            FOODPATH = pathName;
+            String savePathName = "/uploads/" + fileName;
+            FOODPATH = savePathName;
             File dest = new File(pathName);
             file.transferTo(dest);
 
