@@ -12,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -73,6 +70,14 @@ public class UserController {
     String personPage() {
         return "person";
     }
+    @GetMapping("/getUserInfo")
+    @ResponseBody
+    User getPersonInfoPage() {
+        // return userService.getById(USER_ID);
+        User curUser = userService.getById(USER_ID);
+        return curUser;
+    }
+
 
     @GetMapping("/add")
     String addPage() {
@@ -129,7 +134,7 @@ public class UserController {
             // 将头像的文件路径保存到数据库中
             User newUser = new User();
             newUser.setId(USER_ID);
-            newUser.setUser_image_path(pathName);
+            newUser.setUserimagepath(pathName);
             userService.updateById(newUser);
 
             return ResponseEntity.ok("上传成功!");

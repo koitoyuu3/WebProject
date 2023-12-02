@@ -4,7 +4,7 @@ CREATE TABLE user (
                       name VARCHAR(255),
                       username VARCHAR(255),
                       password VARCHAR(255),
-                      user_image_path VARCHAR(255) DEFAULT '00000',
+                      userimagepath VARCHAR(1023) DEFAULT '00000',
 
                     PRIMARY KEY (id)
 

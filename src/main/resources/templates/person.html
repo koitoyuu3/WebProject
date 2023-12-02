@@ -85,7 +85,7 @@
 
 <nav>
     <a href="./list.html" th:href="@{./main}">主页</a>
-    <a href="#">个人信息</a>
+    <a onclick="showUserInfo()">个人信息</a>
     <a href="./add" th:action="@{./add}">增加数据</a>
     <a href="#" class="logout" onclick="logout()">退出登录</a>
 </nav>
@@ -157,35 +157,51 @@
             .catch(error => console.error('Error querying data: ', error));
     }
 
-    function displayQueryResult(data) {
-        // 渲染查询结果到表格
-        var table = document.getElementById('userData');
-        table.innerHTML = ''; // 清空表格内容
 
-        // 创建表头
-        var thead = table.createTHead();
+
+    function logout() {
+        // 实现退出登录的逻辑
+        alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
+    }
+    function showUserInfo() {
+        // 使用 Fetch API 发起获取用户信息的异步请求
+        fetch('/getUserInfo')
+            .then(response => response.json())
+            .then(user => {
+                // 处理获取的用户信息
+                displayUserInfo(user);
+            })
+            .catch(error => console.error('Error fetching user info: ', error));
+    }
+
+
+    function displayUserInfo(user) {
+        // 渲染用户信息到页面上
+        var mainContent = document.getElementById('userData');
+        mainContent.innerHTML = ''; // 清空表格内容
+
+        // 创建表格头
+        var thead = mainContent.createTHead();
         var row = thead.insertRow();
-        for (var key in data[0]) {
+        for (var key in user) {
             var th = document.createElement('th');
             th.innerHTML = key;
             row.appendChild(th);
         }
 
         // 创建表格内容
-        var tbody = table.createTBody();
-        data.forEach(item => {
-            var tr = tbody.insertRow();
-            for (var key in item) {
-                var td = tr.insertCell();
-                td.innerHTML = item[key];
-            }
-        });
+        var tbody = mainContent.createTBody();
+        var tr = tbody.insertRow();
+        for (var key in user) {
+            var td = tr.insertCell();
+            td.innerHTML = user[key];
+        }
+
+        // 显示结果区域
+        var resultArea = document.getElementById('result');
+        resultArea.innerHTML = '个人信息加载成功!';
     }
 
-    function logout() {
-        // 实现退出登录的逻辑
-        alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
-    }
 </script>
 </body>
 </html>
