@@ -1,17 +1,13 @@
 package com.example.webproject.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.webproject.entity.Food;
 import com.example.webproject.entity.User;
-import com.example.webproject.mapper.UserMapper;
 import com.example.webproject.service.IFoodService;
 import com.example.webproject.service.IUserService;
-import com.example.webproject.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -118,7 +114,7 @@ public class UserController {
 
         try {
             // 保存文件到服务器的指定目录，这里保存 "uploads" 文件夹中
-            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/uploads/";
+            String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/uploads/";
             File uploadPath = new File(uploadDir);
 
             if (!uploadPath.exists()) {
@@ -127,6 +123,7 @@ public class UserController {
 
             String fileName = file.getOriginalFilename();
             String pathName = uploadPath.getAbsolutePath() + File.separator + fileName;
+            String savePathName = "/uploads/" + fileName;
             //FOODPATH = pathName;
             File dest = new File(pathName);
             file.transferTo(dest);
@@ -134,7 +131,7 @@ public class UserController {
             // 将头像的文件路径保存到数据库中
             User newUser = new User();
             newUser.setId(USER_ID);
-            newUser.setUserimagepath(pathName);
+            newUser.setUserimagepath(savePathName);
             userService.updateById(newUser);
 
             return ResponseEntity.ok("上传成功!");

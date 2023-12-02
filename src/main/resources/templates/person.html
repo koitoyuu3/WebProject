@@ -75,6 +75,13 @@
             padding: 12px;
             text-align: left;
         }
+
+        img {
+            width: 100px;
+            height: auto;
+            aspect-ratio: 1/1; /* CSS Aspect Ratio property, if supported */
+        }
+
     </style>
 </head>
 <body>
@@ -175,33 +182,58 @@
     }
 
 
+
+
     function displayUserInfo(user) {
         // 渲染用户信息到页面上
         var mainContent = document.getElementById('userData');
         mainContent.innerHTML = ''; // 清空表格内容
 
-        // 创建表格头
-        var thead = mainContent.createTHead();
-        var row = thead.insertRow();
+        // 创建一个包含单行的表格
+        var table = document.createElement('table');
+        var tbody = table.createTBody();
+
+
+        // 遍历用户信息
         for (var key in user) {
-            var th = document.createElement('th');
-            th.innerHTML = key;
-            row.appendChild(th);
+            var tr = tbody.insertRow();
+            // 创建表格单元格
+
+            switch (key) {
+                case "name":
+                    var th = tr.insertCell();
+                    th.innerHTML = '名字';
+                    // 创建表格值单元格
+                    var td = tr.insertCell();
+                    td.innerHTML = user[key];
+                    break;
+                case "username":
+                    var th = tr.insertCell();
+                    th.innerHTML = '用户名';
+                    // 创建表格值单元格
+                    var td = tr.insertCell();
+                    td.innerHTML = user[key];
+                    break;
+                case "userimagepath":
+                    var th = tr.insertCell();
+                    th.innerHTML = '用户头像';
+                    // 创建表格值单元格
+                    var td = tr.insertCell();
+                    td.innerHTML = `<img src="${user[key]}" alt="用户头像">`;
+                    //td.innerHTML = `<img src="${user[key]}" alt="用户头像" style="width: 50px; height: 50px;">`;
+                    break;
+
+            }
+
         }
 
-        // 创建表格内容
-        var tbody = mainContent.createTBody();
-        var tr = tbody.insertRow();
-        for (var key in user) {
-            var td = tr.insertCell();
-            td.innerHTML = user[key];
-        }
+        // 将表格添加到主内容区域
+        mainContent.appendChild(table);
 
         // 显示结果区域
         var resultArea = document.getElementById('result');
         resultArea.innerHTML = '个人信息加载成功!';
     }
-
 </script>
 </body>
 </html>
