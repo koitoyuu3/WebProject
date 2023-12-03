@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,7 +69,11 @@ public class UserController {
     }
 
     @GetMapping("/main")
-    String mainPage() {return "list"; }
+    String mainPage(Model model) {
+        List<Food> foodList = foodService.list();
+        model.addAttribute("Foods", foodList);
+        return "list";
+    }
     @GetMapping("/person")
     String personPage() {
         return "person";
@@ -200,6 +205,35 @@ public class UserController {
             return ResponseEntity.status(500).body("上传失败!");
         }
     }
+
+    @GetMapping("/correct")
+    String correctForm(Model model) {
+        QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userid", USER_ID);
+        List<Food> foodList = foodService.list(queryWrapper);
+        model.addAttribute("Foods", foodList);
+        return "foodCorrect";
+    }
+    @GetMapping("/editFood")
+    String editForm(Model model, @RequestParam Long id) {
+        Food curFood = foodService.getById(id);
+        model.addAttribute("food", curFood);
+        return "editFood";
+    }
+
+    @PostMapping("/editFood")
+    String edit(@ModelAttribute Food food) {
+        food.setImagepath(FOODPATH);
+        foodService.updateById(food);
+        return "redirect:/correct";
+    }
+
+    @GetMapping("/deleteFood")
+    String delete(@RequestParam Long id) {
+        foodService.removeById(id);
+        return "redirect:/correct";
+    }
+
     public boolean loginJudge(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username)

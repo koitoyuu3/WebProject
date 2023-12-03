@@ -113,6 +113,7 @@
     <a href="./list.html" th:href="@{./main}">主页</a>
     <a onclick="showUserInfo()">个人信息</a>
     <a href="./add" th:action="@{./add}">增加数据</a>
+    <a href="./correct">修改数据</a>
     <a href="./login" class="logout" onclick="logout()" th:action="@{./add}">退出登录</a>
 </nav>
 
@@ -200,7 +201,8 @@
 
                 var imageCell = tr.insertCell();
                 imageCell.innerHTML = `<img src="${food.imagepath}" alt="${food.foodname}" >`;
-            });
+
+                });
 
             // 将表格添加到主内容区域
             mainContent.appendChild(table);

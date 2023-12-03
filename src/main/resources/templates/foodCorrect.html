@@ -105,6 +105,7 @@
             <th>美食</th>
             <th>美食评价</th>
             <th>美食图片</th>
+            <th>修改操作</th>
         </tr>
         </thead>
         <tr th:each="Food:${Foods}">
@@ -113,6 +114,14 @@
             <td th:text="${Food.description}">111</td>
             <td>
                 <img th:src="@{${Food.imagepath}}" alt="食物图片">
+            </td>
+            <td>
+                <a th:href="@{./editFood(id=${Food.id})}">
+                    <button type="button">编辑</button>
+                </a>
+                <a th:href="@{./deleteFood(id=${Food.id})}">
+                    <button type="button">删除</button>
+                </a>
             </td>
         </tr>
     </table>
