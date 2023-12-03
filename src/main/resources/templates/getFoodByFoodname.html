@@ -94,8 +94,6 @@
 
 <nav>
     <a href="./list.html" th:href="@{./main}">主页</a>
-    <a href="inputFoodname.html" th:href="@{./getFood}">查询美食</a>
-    <a href="./inputUserName.html" th:href="@{./getUser}">查询用户</a>
     <a href="./person.html" style="float: right;" th:href="@{./person}">个人中心</a>
 </nav>
 
@@ -103,19 +101,19 @@
     <table class="table">
         <thead>
         <tr>
-            <th>序号</th>
             <th>美食</th>
             <th>美食评价</th>
             <th>美食图片</th>
+            <th>提供者</th>
         </tr>
         </thead>
-        <tr th:each="Food:${Foods}">
-            <td th:text="${FoodStat.count}">1</td>
-            <td th:text="${Food.foodname}">Bob</td>
-            <td th:text="${Food.description}">111</td>
+        <tr>
+            <td th:text="${food.foodname}">1</td>
+            <td th:text="${food.description}">111</td>
             <td>
-                <img th:src="@{${Food.imagepath}}" alt="食物图片">
+                <img th:src="@{${food.imagepath}}" alt="头像">
             </td>
+            <td th:text="${user.name}">111</td>
         </tr>
     </table>
 </section>

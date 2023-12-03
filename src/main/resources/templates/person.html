@@ -125,6 +125,9 @@
         <button onclick="clickUpload()">上传头像</button>
         </label>
         <input type="file" id="image-input" style="display: none" onchange="uploadUserImage()">
+        <a href="/userCorrect">
+            <button>修改信息</button>
+        </a>
 
     </aside>
 
@@ -253,10 +256,10 @@
         })
             .then(response => {
                 if (response.ok) {
-                    // 注销成功，可以执行前端的一些处理，比如跳转到登录页面
+                    // 退出成功，可以执行前端的一些处理，比如跳转到登录页面
                     window.location.href = '/login';
                 } else {
-                    // 注销失败，可以进行相应的处理
+                    // 退出失败，可以进行相应的处理
                     console.error('Logout failed');
                 }
             })

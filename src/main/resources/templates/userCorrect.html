@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>美食鉴赏 - 主页</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+
+        header {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        nav a {
+            float: left;
+            display: block;
+            color: #fff;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        section {
+            padding: 20px;
+            margin: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        article {
+            margin-bottom: 20px;
+        }
+
+        footer {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 95%;
+            padding: 7px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-bottom:20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>全国美食鉴赏系统</h1>
+</header>
+
+<nav>
+    <a href="./list.html" th:href="@{./main}">主页</a>
+    <a href="./person.html" style="float: right;" th:href="@{./person}">个人中心</a>
+</nav>
+
+<section>
+    <label for="image-input">
+        <button onclick="clickUpload()">修改头像</button>
+    </label>
+    <input type="file" id="image-input" style="display: none" onchange="uploadUserImage()">
+    <div id="result"></div>
+
+    <form action="./userCorrect" method="post" th:action="@{./userCorrect}" onsubmit="return validateForm()">
+        <div class="form-group">
+            <label for="name">名字:</label>
+            <input type="text" class="form-control" id="name" name="name" th:value="${user.name}">
+        </div>
+        <div class="form-group">
+            <label for="username">用户名:</label>
+            <input type="text" class="form-control" id="username" name="username" th:value="${user.username}" readonly>
+        </div>
+        <div class="form-group">
+            <label for="password">密码:</label>
+            <input type="password" class="form-control" id="password" name="password" th:value="${user.password}">
+        </div>
+        <div class="form-group">
+            <button type="submit">提交</button>
+        </div>
+        <button type="button" onclick="confirmLogout()">注销</button>
+    </form>
+</section>
+<script>
+    function clickUpload() {
+        // Event.preventDefault();
+        var fileInput = document.getElementById('image-input');
+        fileInput.click(); // 手动触发文件输入框的点击事件
+    }
+
+    function uploadUserImage() {
+        var fileInput = document.getElementById('image-input');
+        var file = fileInput.files[0];
+
+        if (file) {
+            var formData = new FormData();
+            formData.append('image', file);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/uploadUserImage', true);
+
+            // 处理上传完成后的回调
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('result').innerHTML = '上传成功!';
+                } else {
+                    document.getElementById('result').innerHTML = '上传失败!';
+                }
+            };
+
+            // 发送请求
+            xhr.send(formData);
+        } else {
+            alert('请选择要上传的图片');
+        }
+    }
+
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var password = document.getElementById('password').value;
+
+        if (name.trim() === '' || password.trim() === '') {
+            alert('名字&密码不能为空');
+            return false; // 阻止表单提交
+        }
+
+        return true; // 允许表单提交
+    }
+    function confirmLogout() {
+        var confirmLogout = confirm("您确认要注销吗？");
+
+        if (confirmLogout) {
+            // 用户点击了确认，执行注销操作
+            fetch('/userDelete', {
+                method: 'POST',
+            })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/login';
+                        alert("已执行注销操作"); // 这里可以替换成实际的注销操作
+                    } else {
+                        alert("注销操作失败");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error during logout:', error);
+                    alert("注销操作失败");
+                });
+        } else {
+            // 用户点击了取消，不执行任何操作
+            alert("取消注销操作");
+        }
+    }
+</script>
+
+<footer>
+    &copy; 2023 全国美食鉴赏系统. 保留所有权利.
+</footer>
+</body>
+</html>
+

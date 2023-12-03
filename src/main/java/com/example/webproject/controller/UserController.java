@@ -1,6 +1,7 @@
 package com.example.webproject.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.webproject.entity.Food;
 import com.example.webproject.entity.User;
 import com.example.webproject.service.IFoodService;
@@ -232,6 +233,63 @@ public class UserController {
     String delete(@RequestParam Long id) {
         foodService.removeById(id);
         return "redirect:/correct";
+    }
+
+    @GetMapping("/userCorrect")
+    String userCorrectForm(Model model) {
+        User curUser = userService.getById(USER_ID);
+        model.addAttribute("user", curUser);
+        return "userCorrect";
+    }
+
+    @PostMapping("/userCorrect")
+    String userCorrect(@ModelAttribute User user) {
+        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("id", USER_ID);
+        userService.update(user, updateWrapper);
+        return "redirect:/person";
+    }
+    @PostMapping("/userDelete")
+    public ResponseEntity<?> userDelete(HttpSession session) {
+        // 销毁session
+        session.invalidate();
+        // 从数据库中删除用户和对应的食物
+        QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("userid", USER_ID);
+        foodService.remove(queryWrapper);
+        userService.removeById(USER_ID);
+        return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/getUser")
+    String getUserForm() {
+        return "inputUserName";
+    }
+    @PostMapping("/getUser")
+    String getByName(Model model, @RequestParam String name) {
+        //T getOne(Wrapper<T> queryWrapper);
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("name", name);
+        User user = userService.getOne(qw);
+        model.addAttribute("user", user);
+        return "getUserByName";
+    }
+
+    @GetMapping("/getFood")
+    String getFoodForm() {
+        return "inputFoodname";
+    }
+    @PostMapping("/getFood")
+    String getByFoodname(Model model, @RequestParam String foodname) {
+        //T getOne(Wrapper<T> queryWrapper);
+        QueryWrapper<Food> qw = new QueryWrapper<>();
+        qw.eq("foodname", foodname);
+        Food food = foodService.getOne(qw);
+        model.addAttribute("food", food);
+
+        Long userId = food.getUserid();
+        User user = userService.getById(userId);
+        model.addAttribute("user", user);
+        return "getFoodByFoodname";
     }
 
     public boolean loginJudge(String username, String password) {
