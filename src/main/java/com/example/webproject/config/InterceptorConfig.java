@@ -12,6 +12,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         // 添加自定义拦截器，并指定要拦截的URL
         InterceptorRegistration ir = registry.addInterceptor(new LoginInterceptor());
         ir.excludePathPatterns("/login");
+        ir.excludePathPatterns("/register");
         ir.addPathPatterns("/**");
     }
 }

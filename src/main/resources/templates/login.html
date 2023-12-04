@@ -87,6 +87,9 @@
             <label for="password">密码:</label>
             <input type="password" id="password" name="password" required>
         </div>
+        <div th:if="${error}" class="error-message">
+            <p style="color: red" th:text="${error}" ></p>
+        </div>
         <div class="form-group">
             <button type="submit">登录</button>
         </div>

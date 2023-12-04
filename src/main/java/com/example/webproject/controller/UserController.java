@@ -9,6 +9,7 @@ import com.example.webproject.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,9 @@ public class UserController {
     IUserService userService;
     @Autowired
     IFoodService foodService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     Long USER_ID;
 
@@ -39,16 +43,20 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    String login(@RequestParam String username, @RequestParam String password, HttpSession session) {
+    String login(@RequestParam String username, @RequestParam String password, HttpSession session, Model model) {
         boolean loginSuccessful = loginJudge(username, password);
-        if(loginSuccessful) {
-            USER_ID  = getIDbyUsername(username);
+        if (loginSuccessful) {
+            USER_ID = getIDbyUsername(username);
             session.setAttribute("username", username);
             session.setAttribute("password", password);
             return "redirect:/main";
+        } else {
+            // 登录失败，向模型中添加错误信息
+            model.addAttribute("error", "用户名或密码错误");
+
+            // 重定向到登录页面，并在登录页面中显示错误信息
+            return "login";
         }
-        else
-            return "redirect:/login";
     }
 
     @GetMapping("/register")
@@ -61,11 +69,15 @@ public class UserController {
         User user = new User();
         user.setName(name);
         user.setUsername(username);
-        user.setPassword(password);
+
+        String encryptedPassword = passwordEncoder.encode(password);
+        user.setPassword(encryptedPassword);
+        //user.setPassword(password);
         session.setAttribute("username", username);
-        session.setAttribute("password", password);
+        //session.setAttribute("password", password);
+        session.setAttribute("password", encryptedPassword);
         userService.save(user);
-        USER_ID  = getIDbyUsername(username);
+        USER_ID = getIDbyUsername(username);
         return "redirect:/main";
     }
 
@@ -75,16 +87,19 @@ public class UserController {
         model.addAttribute("Foods", foodList);
         return "list";
     }
+
     @GetMapping("/person")
     String personPage() {
         return "person";
     }
+
     @PostMapping("/logout")
     public ResponseEntity<?> logout(HttpSession session) {
         // 销毁session
         session.invalidate();
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getUserInfo")
     @ResponseBody
     User getPersonInfoPage() {
@@ -92,6 +107,7 @@ public class UserController {
         User curUser = userService.getById(USER_ID);
         return curUser;
     }
+
     @GetMapping("/getAllFoodByUser")
     public ResponseEntity<?> getFoodByUser() {
         // List<T> list(Wrapper<T> queryWrapper);
@@ -118,9 +134,8 @@ public class UserController {
     }
 
 
-
     @PostMapping("/person")
-    String addFood(@RequestParam String foodname, @RequestParam String description ){
+    String addFood(@RequestParam String foodname, @RequestParam String description) {
         Food food = new Food();
         food.setFoodname(foodname);
         food.setDescription(description);
@@ -215,6 +230,7 @@ public class UserController {
         model.addAttribute("Foods", foodList);
         return "foodCorrect";
     }
+
     @GetMapping("/editFood")
     String editForm(Model model, @RequestParam Long id) {
         Food curFood = foodService.getById(id);
@@ -249,6 +265,7 @@ public class UserController {
         userService.update(user, updateWrapper);
         return "redirect:/person";
     }
+
     @PostMapping("/userDelete")
     public ResponseEntity<?> userDelete(HttpSession session) {
         // 销毁session
@@ -260,10 +277,12 @@ public class UserController {
         userService.removeById(USER_ID);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/getUser")
     String getUserForm() {
         return "inputUserName";
     }
+
     @PostMapping("/getUser")
     String getByName(Model model, @RequestParam String name) {
         //T getOne(Wrapper<T> queryWrapper);
@@ -278,6 +297,7 @@ public class UserController {
     String getFoodForm() {
         return "inputFoodname";
     }
+
     @PostMapping("/getFood")
     String getByFoodname(Model model, @RequestParam String foodname) {
         //T getOne(Wrapper<T> queryWrapper);
@@ -294,19 +314,23 @@ public class UserController {
 
     public boolean loginJudge(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username)
-                .eq("password", password);
-
+        queryWrapper.eq("username", username);
+        //.eq("password", password);
         User user = userService.getOne(queryWrapper);
 
-        return user != null;
+        //return user != null;
+        if (user != null) {
+            String storedPassword = user.getPassword();
+            return passwordEncoder.matches(password, storedPassword);
+        }
+        return false;
+
     }
 
-    public Long getIDbyUsername(String username){
+    public Long getIDbyUsername(String username) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("username", username);
         User user = userService.getOne(queryWrapper);
         return user.getId();
     }
-    //public void addPathToDB();
 }
