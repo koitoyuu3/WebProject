@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>全国美食鉴赏系统 - Register</title>
+    <title>美食鉴赏系统 - Register</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,9 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            background-image: url('loginBackground.jpg');
+            background-size: cover; /* 图片将被缩放以填充整个屏幕 */
+            background-position: center; /* 图片在屏幕中居中显示 */
         }
 
         .title {
@@ -21,7 +24,7 @@
         }
 
         .login-container {
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.5);
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
@@ -29,7 +32,11 @@
             text-align: center;
             margin-top: 50px;
         }
-
+        input {
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #ccc;
+        }
         .login-container h2 {
             color: #333;
         }
@@ -93,7 +100,7 @@
 </head>
 <body>
 <div class="title">
-    <h1>全国美食鉴赏系统</h1>
+    <h1>美食鉴赏系统</h1>
 </div>
 <div class="login-container">
     <h2>注册</h2>
@@ -115,7 +122,7 @@
             <button type="submit" onclick="return validateForm()">注册</button>
         </div>
     </form>
-    <a class="register-link" href="./" th:href="@{./}">已有账号？立即登录</a>
+    <a class="register-link" href="./login" th:href="@{./login}">已有账号？立即登录</a>
 </div>
 </body>
 </html>

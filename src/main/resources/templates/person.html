@@ -10,17 +10,24 @@
             margin: 0;
             padding: 0;
             background-color: #f8f8f8;
+            background-image: url('loginBackground.jpg');
+            background-size: cover; /* 图片将被缩放以填充整个屏幕 */
+            background-position: center; /* 图片在屏幕中居中显示 */
         }
 
+        input {
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #ccc;
+        }
         header {
-            background-color: #4caf50;
-            color: #fff;
+            /*background-color: #4caf50;*/
+            color: rgba(51, 51, 51, 0.8);
             padding: 15px;
             text-align: center;
         }
-
         nav {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.8);
             overflow: hidden;
         }
 
@@ -31,6 +38,7 @@
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
+            font-weight: bold;
         }
 
         nav a.logout {
@@ -98,7 +106,7 @@
         #divider {
             width: 10px;
             height: 100%;
-            background-color: #333; /* 分隔线颜色 */
+            background-color: rgba(51, 51, 51, 0.8);
             float: left; /* 使分隔线浮动到左侧 */
         }
     </style>
@@ -106,7 +114,7 @@
 <body>
 
 <header>
-    <h1>全国美食鉴赏系统</h1>
+    <h1>美食鉴赏系统</h1>
 </header>
 
 <nav>
@@ -119,8 +127,6 @@
 
 <section>
     <aside>
-        <!-- 左侧栏 -->
-        <h2>用户操作</h2>
         <label for="image-input">
         <button onclick="clickUpload()">上传头像</button>
         </label>
@@ -185,11 +191,19 @@
         }  else {
             // 创建一个用于显示食物项的表格
             var table = document.createElement('table');
+            table.style.width = '100%';
+            table.style.borderCollapse = 'collapse';
+            table.style.marginTop = '20px';
+            table.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+            table.style.borderRadius = '8px';
+            table.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
             var tbody = table.createTBody();
 
             // 添加表格标题
             var caption = table.createCaption();
             caption.innerHTML = '您推荐的美食';
+            caption.style.fontWeight = 'bold';
+            caption.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
 
             // 遍历食物项
             foodItems.forEach(food => {
@@ -287,8 +301,19 @@
 
         // 创建一个包含单行的表格
         var table = document.createElement('table');
+        table.style.width = '100%';
+        table.style.borderCollapse = 'collapse';
+        table.style.marginTop = '20px';
+        table.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.1)';
+        table.style.borderRadius = '8px';
+        table.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
         var tbody = table.createTBody();
 
+        var caption = table.createCaption();
+        caption.innerHTML = '个人信息';
+
+        caption.style.fontWeight = 'bold';
+        caption.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
 
         // 遍历用户信息
         for (var key in user) {

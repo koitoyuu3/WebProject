@@ -12,9 +12,9 @@ public class ImgBackShowConfig implements WebMvcConfigurer {
         //registry.addResourceHandler(相对路径)
         //addResourceLocations(绝对路径)
         //System.getProperty("user.dir") 获取当前项目的绝对路径
-        //
-        //registry.addResourceHandler("images/headImage/**").addResourceLocations("file:"+System.getProperty("user.dir")+"\\src\\main\\resources\\static\\images\\headImage\\");
         registry.addResourceHandler("uploads/**").addResourceLocations("file:"+System.getProperty("user.dir")+"\\src\\main\\resources\\static\\uploads\\");
+        registry.addResourceHandler("templates/**").addResourceLocations("file:"+System.getProperty("user.dir")+"\\src\\main\\resources\\templates\\");
+
     }
 
 }

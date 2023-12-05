@@ -10,17 +10,21 @@
             margin: 0;
             padding: 0;
             background-color: #f8f8f8;
+            background-image: url('loginBackground.jpg');
+            background-size: cover; /* 图片将被缩放以填充整个屏幕 */
+            background-position: center; /* 图片在屏幕中居中显示 */
         }
 
+
         header {
-            background-color: #4caf50;
-            color: #fff;
+            /*background-color: #4caf50;*/
+            color: rgba(51, 51, 51, 0.8);
             padding: 15px;
             text-align: center;
         }
 
         nav {
-            background-color: #333;
+            background-color: rgba(51, 51, 51, 0.8);
             overflow: hidden;
         }
 
@@ -31,12 +35,17 @@
             text-align: center;
             padding: 14px 16px;
             text-decoration: none;
+            font-weight: bold;
         }
-
+        input {
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: 1px solid #ccc;
+        }
         section {
             padding: 20px;
             margin: 20px;
-            background-color: #fff;
+            background-color: rgba(255, 255, 255, 0.5);
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
         }
@@ -84,7 +93,7 @@
 <body>
 
 <header>
-    <h1>全国美食鉴赏系统</h1>
+    <h1>美食鉴赏系统</h1>
 </header>
 
 <nav>
@@ -186,9 +195,7 @@
     }
 </script>
 
-<footer>
-    &copy; 2023 全国美食鉴赏系统. 保留所有权利.
-</footer>
+
 </body>
 </html>
 
