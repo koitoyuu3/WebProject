@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            background-image: url('loginBackground.jpg');
+            color: #333;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .error-icon {
+            font-size: 100px;
+            color: #e74c3c;
+        }
+
+        .error-message {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        .error-code {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #555;
+        }
+
+        .home-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+
+        .support-link {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #3498db;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="error-icon">❌</div>
+<div class="error-message">Oops! 出错了</div>
+<div class="error-code">错误代码: 500 Internal Server Error</div>
+<a href="/main" class="home-button">返回首页</a>
+</body>
+</html>
