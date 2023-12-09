@@ -104,68 +104,30 @@
 </nav>
 
 <section>
-    <label for="image-input">
-        <button onclick="clickUpload()">上传图片</button>
-    </label>
-    <input type="file" id="image-input" style="display: none" onchange="uploadFoodImage()">
-    <div id="result"></div>
-
-    <form action="./person" method="post" th:action="@{./person}" onsubmit="return validateForm()">
+    <form action="./sendMessage" method="post" th:action="@{./sendMessage}" onsubmit="return validateForm()">
         <div class="form-group">
-            <label for="foodname">美食名称:</label>
-            <input type="text" class="form-control" id="foodname" name="foodname">
+            <label for="acceptname">收件人:</label>
+            <input type="text" class="form-control" id="acceptname" name="acceptname">
         </div>
         <div class="form-group">
-            <label for="description">美食描述:</label>
-            <input type="text" class="form-control" id="description" name="description">
+            <label for="content">内容:</label>
+            <input type="text" class="form-control" id="content" name="content">
         </div>
         <div class="form-group">
-            <button type="submit">提交</button>
+            <button type="submit">发送</button>
         </div>
     </form>
 </section>
 <script>
-    function clickUpload() {
-        // Event.preventDefault();
-        var fileInput = document.getElementById('image-input');
-        fileInput.click(); // 手动触发文件输入框的点击事件
-    }
-    function uploadFoodImage() {
-        var fileInput = document.getElementById('image-input');
-        var file = fileInput.files[0];
-
-        if (file) {
-            var formData = new FormData();
-            formData.append('image', file);
-
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/uploadFoodImage', true);
-
-            // 处理上传完成后的回调
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    document.getElementById('result').innerHTML = '上传成功!';
-                } else {
-                    document.getElementById('result').innerHTML = '上传失败!';
-                }
-            };
-
-            // 发送请求
-            xhr.send(formData);
-        } else {
-            alert('请选择要上传的图片');
-        }
-    }
-
     function validateForm() {
-        var foodname = document.getElementById('foodname').value;
-        var description = document.getElementById('description').value;
+        var acceptname = document.getElementById('acceptname').value;
+        var content = document.getElementById('content').value;
 
-        if (foodname.trim() === '' || description.trim() === '') {
-            alert('美食名称和描述不能为空');
+        if (acceptname.trim() === '' || content.trim() === '') {
+            alert('收件人和内容不能为空！');
             return false; // 阻止表单提交
         }
-
+        alert("发送成功！")
         return true; // 允许表单提交
     }
 </script>

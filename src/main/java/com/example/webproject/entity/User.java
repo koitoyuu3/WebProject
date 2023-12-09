@@ -22,4 +22,5 @@ public class User {
     // 一对多
     @TableField(exist = false)
     private List<Food> foods;
+
 }

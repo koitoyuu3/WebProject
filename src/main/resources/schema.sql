@@ -19,3 +19,14 @@ CREATE TABLE food (
                       userid BIGINT default 0,
                       FOREIGN KEY (userid) REFERENCES user(id)
 );
+
+DROP TABLE IF EXISTS `message`;
+CREATE TABLE message (
+                      id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                      content VARCHAR(1023),
+                      time VARCHAR(255),
+                      sendid BIGINT default 0,
+                      sendname VARCHAR(255),
+                      acceptid BIGINT default 0,
+                      acceptname VARCHAR(255)
+);

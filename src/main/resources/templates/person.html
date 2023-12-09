@@ -130,6 +130,9 @@
     <a href="./add" th:action="@{./add}">增加数据</a>
     <a href="./correct">修改数据</a>
     <a href="./login" class="logout" onclick="logout()" th:action="@{./add}">退出登录</a>
+    <a href="./getMessageAccept" class="logout" th:action="@{./getMessageAccept}">收件箱</a>
+    <a href="./getMessageSend" class="logout" th:action="@{./getMessageSend}">发件箱</a>
+    <a href="./sendMessage" class="logout" th:action="@{./sendMessage}">写信</a>
 </nav>
 
 <section>
@@ -216,6 +219,17 @@
             caption.style.fontWeight = 'bold';
             caption.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
 
+            var titleRow = tbody.insertRow();
+            var nameTitle = titleRow.insertCell();
+            nameTitle.innerHTML = '<b>美食</b>';
+
+            var descriptionTitle = titleRow.insertCell();
+            descriptionTitle.innerHTML = '<b>美食评价</b>';
+
+            var imageTitle = titleRow.insertCell();
+            imageTitle.innerHTML = '<b>美食图片</b>';
+
+
             // 遍历食物项
             foodItems.forEach(food => {
                 var tr = tbody.insertRow();
@@ -281,16 +295,18 @@
         })
             .then(response => {
                 if (response.ok) {
-                    // 退出成功，可以执行前端的一些处理，比如跳转到登录页面
-                    window.location.href = '/login';
+                    // 成功处理
+                    alert('退出登录成功');
+                    window.location.href = '/login'; // 或者执行其他你希望的操作
                 } else {
-                    // 退出失败，可以进行相应的处理
+                    // 处理失败情况
                     console.error('Logout failed');
                 }
             })
             .catch(error => console.error('Error during logout:', error));
-        alert('退出登录成功'); // 这里可以替换成实际的退出登录操作
     }
+
+
 
     function showUserInfo() {
         // 使用 Fetch API 发起获取用户信息的异步请求

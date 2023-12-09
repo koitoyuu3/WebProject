@@ -159,9 +159,7 @@
 
     function validateForm() {
         var name = document.getElementById('name').value;
-        var password = document.getElementById('password').value;
-
-        if (name.trim() === '' || password.trim() === '') {
+        if (name.trim() === '') {
             alert('名字&密码不能为空');
             return false; // 阻止表单提交
         }

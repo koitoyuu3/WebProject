@@ -3,8 +3,10 @@ package com.example.webproject.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.webproject.entity.Food;
+import com.example.webproject.entity.Message;
 import com.example.webproject.entity.User;
 import com.example.webproject.service.IFoodService;
+import com.example.webproject.service.IMessageService;
 import com.example.webproject.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +33,8 @@ public class UserController {
     IUserService userService;
     @Autowired
     IFoodService foodService;
+    @Autowired
+    IMessageService messageService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -49,6 +55,9 @@ public class UserController {
             USER_ID = getIDbyUsername(username);
             session.setAttribute("username", username);
             session.setAttribute("password", password);
+
+            sendByAdmin("您已登录成功");
+
             return "redirect:/main";
         } else {
             // 登录失败，向模型中添加错误信息
@@ -78,6 +87,8 @@ public class UserController {
         session.setAttribute("password", encryptedPassword);
         userService.save(user);
         USER_ID = getIDbyUsername(username);
+
+        sendByAdmin("您已登录成功");
         return "redirect:/main";
     }
 
@@ -110,7 +121,6 @@ public class UserController {
 
     @GetMapping("/getAllFoodByUser")
     public ResponseEntity<?> getFoodByUser() {
-        // List<T> list(Wrapper<T> queryWrapper);
         try {
             QueryWrapper<Food> queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("userid", USER_ID);
@@ -143,6 +153,8 @@ public class UserController {
         food.setImagepath(FOODPATH);
         foodService.save(food);
 
+        sendByAdmin("您已成功添加食物：" + foodname);
+
         // 将食物整合到用户数据库
         User curUser = userService.getById(USER_ID);
         List<Food> foodList = curUser.getFoods();
@@ -154,6 +166,8 @@ public class UserController {
 
         foodList.add(food);
         userService.updateById(curUser);
+
+        FOODPATH = "/uploads/autofood.jpg";
         return "redirect:/person";
     }
 
@@ -185,6 +199,7 @@ public class UserController {
             newUser.setId(USER_ID);
             newUser.setUserimagepath(savePathName);
             userService.updateById(newUser);
+            sendByAdmin("您已成功上传头像");
 
             return ResponseEntity.ok("上传成功!");
         } catch (IOException e) {
@@ -242,11 +257,15 @@ public class UserController {
     String edit(@ModelAttribute Food food) {
         food.setImagepath(FOODPATH);
         foodService.updateById(food);
+
+        sendByAdmin("您已成功修改食物信息：" + food.getFoodname());
         return "redirect:/correct";
     }
 
     @GetMapping("/deleteFood")
     String delete(@RequestParam Long id) {
+        Food food = foodService.getById(id);
+        sendByAdmin("您已成功删除食物信息：" + food.getFoodname());
         foodService.removeById(id);
         return "redirect:/correct";
     }
@@ -263,6 +282,8 @@ public class UserController {
         UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("id", USER_ID);
         userService.update(user, updateWrapper);
+
+        sendByAdmin("您已成功修改个人信息");
         return "redirect:/person";
     }
 
@@ -290,6 +311,7 @@ public class UserController {
         qw.eq("name", name);
         User user = userService.getOne(qw);
         model.addAttribute("user", user);
+        sendByAdmin("成功查询到用户：" + name);
         return "getUserByName";
     }
 
@@ -309,8 +331,54 @@ public class UserController {
         Long userId = food.getUserid();
         User user = userService.getById(userId);
         model.addAttribute("user", user);
+        sendByAdmin("成功查询到食物：" + foodname);
         return "getFoodByFoodname";
     }
+
+    @GetMapping("/getMessageAccept")
+    String acceptMessageForm(Model model) {
+        List<Message> msgList = messageService.list();
+        model.addAttribute("MessageList", msgList);
+        model.addAttribute("userid", USER_ID);
+        return "listMessageAccept";
+    }
+    @GetMapping("/getMessageSend")
+    String sendMessageForm(Model model) {
+        List<Message> msgList = messageService.list();
+        model.addAttribute("MessageList", msgList);
+        model.addAttribute("userid", USER_ID);
+        return "listMessageSend";
+    }
+
+    @GetMapping("/sendMessage")
+    String messagePage() {
+        return "sendMessage";
+    }
+
+    @PostMapping("/sendMessage")
+    String sendMessage(@RequestParam String acceptname, @RequestParam String content) {
+        Message newMessage = new Message();
+        // 发件人
+        User sendUser = userService.getById(USER_ID);
+        newMessage.setSendid(USER_ID);
+        newMessage.setSendname(sendUser.getName());
+        // 内容
+        newMessage.setContent(content);
+        // 收件人
+        QueryWrapper<User> qw = new QueryWrapper<>();
+        qw.eq("name", acceptname);
+        User acceptUser = userService.getOne(qw);
+        newMessage.setAcceptname(acceptname);
+        newMessage.setAcceptid(acceptUser.getId());
+        // 时间
+        newMessage.setTime(getLocalTime());
+        messageService.save(newMessage);
+
+        sendByAdmin("成功发送消息给：" + acceptname);
+        return "redirect:/person";
+    }
+
+
 
     public boolean loginJudge(String username, String password) {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -318,7 +386,7 @@ public class UserController {
         //.eq("password", password);
         User user = userService.getOne(queryWrapper);
 
-        //return user != null;
+
         if (user != null) {
             String storedPassword = user.getPassword();
             return passwordEncoder.matches(password, storedPassword);
@@ -332,5 +400,22 @@ public class UserController {
         queryWrapper.eq("username", username);
         User user = userService.getOne(queryWrapper);
         return user.getId();
+    }
+
+    public void sendByAdmin(String content) {
+        String localTime = getLocalTime();
+        Message message = new Message();
+        message.setSendid(0L);  // 发送者为系统
+        message.setSendname("Admin");
+        message.setContent(content);
+        message.setAcceptid(USER_ID);
+        message.setTime(localTime);
+        messageService.save(message);
+    }
+
+    public String getLocalTime() {
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return dateTime.format(formatter);
     }
 }
