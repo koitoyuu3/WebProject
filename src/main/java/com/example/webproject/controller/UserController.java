@@ -255,8 +255,10 @@ public class UserController {
 
     @PostMapping("/editFood")
     String edit(@ModelAttribute Food food) {
+
         food.setImagepath(FOODPATH);
         foodService.updateById(food);
+        FOODPATH = "/uploads/autofood.jpg";
 
         sendByAdmin("您已成功修改食物信息：" + food.getFoodname());
         return "redirect:/correct";
