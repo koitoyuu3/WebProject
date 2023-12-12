@@ -13,6 +13,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
         InterceptorRegistration ir = registry.addInterceptor(new LoginInterceptor());
         ir.excludePathPatterns("/login");
         ir.excludePathPatterns("/register");
+        ir.excludePathPatterns("/loginBackground.jpg");
         ir.addPathPatterns("/**");
     }
 }
