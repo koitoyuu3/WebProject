@@ -170,14 +170,13 @@
 
     function loadAllFood() {
         // 从服务器获取所有食物项
-        fetch('/getAllFoodByUser')  // 请根据实际端点修改路径
+        fetch('/getAllFoodByUser')
             .then(response => {
                 // 检查响应类型
                 if (!response.ok) {
                     throw new Error('服务器响应错误');
                 }
                 const contentType = response.headers.get('content-type');
-
                 if (contentType && contentType.includes('application/json')) {
                     return response.json();
                 } else {
@@ -196,9 +195,7 @@
         // 在主内容区域显示食物项
         var mainContent = document.getElementById('userData');
         mainContent.innerHTML = ''; // 清除之前的内容
-
         if (typeof foodItems === 'string' && foodItems === '暂未添加食物') {
-            // 如果接收到的数据是暂未添加食物的字符串，直接显示这个消息
             var noDataMessage = document.createElement('p');
             noDataMessage.innerHTML = '暂未添加食物';
             mainContent.appendChild(noDataMessage);
@@ -212,52 +209,38 @@
             table.style.borderRadius = '8px';
             table.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
             var tbody = table.createTBody();
-
             // 添加表格标题
             var caption = table.createCaption();
             caption.innerHTML = '您推荐的美食';
             caption.style.fontWeight = 'bold';
             caption.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-
             var titleRow = tbody.insertRow();
             var nameTitle = titleRow.insertCell();
             nameTitle.innerHTML = '<b>美食</b>';
-
             var descriptionTitle = titleRow.insertCell();
             descriptionTitle.innerHTML = '<b>美食评价</b>';
-
             var imageTitle = titleRow.insertCell();
             imageTitle.innerHTML = '<b>美食图片</b>';
-
-
             // 遍历食物项
             foodItems.forEach(food => {
                 var tr = tbody.insertRow();
-
                 // 创建表格单元格
                 var nameCell = tr.insertCell();
                 nameCell.innerHTML = food.foodname;
-
                 var descriptionCell = tr.insertCell();
                 descriptionCell.innerHTML = food.description;
-
                 var imageCell = tr.insertCell();
                 imageCell.innerHTML = `<img src="${food.imagepath}" alt="${food.foodname}" >`;
-
             });
-
             // 将表格添加到主内容区域
             mainContent.appendChild(table);
         }
-
         // 显示结果消息
         var resultArea = document.getElementById('result');
         resultArea.innerHTML = '所有食物加载成功!';
     }
 
-
     function clickUpload() {
-        // Event.preventDefault();
         var fileInput = document.getElementById('image-input');
         fileInput.click(); // 手动触发文件输入框的点击事件
     }
@@ -265,14 +248,11 @@
     function uploadUserImage() {
         var fileInput = document.getElementById('image-input');
         var file = fileInput.files[0];
-
         if (file) {
             var formData = new FormData();
             formData.append('image', file);
-
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/uploadUserImage', true);
-
             // 处理上传完成后的回调
             xhr.onload = function () {
                 if (xhr.status === 200) {
@@ -281,7 +261,6 @@
                     document.getElementById('result').innerHTML = '上传失败!';
                 }
             };
-
             // 发送请求
             xhr.send(formData);
         } else {
@@ -297,7 +276,7 @@
                 if (response.ok) {
                     // 成功处理
                     alert('退出登录成功');
-                    window.location.href = '/login'; // 或者执行其他你希望的操作
+                    window.location.href = '/login';
                 } else {
                     // 处理失败情况
                     console.error('Logout failed');
@@ -306,25 +285,19 @@
             .catch(error => console.error('Error during logout:', error));
     }
 
-
-
     function showUserInfo() {
-        // 使用 Fetch API 发起获取用户信息的异步请求
         fetch('/getUserInfo')
             .then(response => response.json())
             .then(user => {
-                // 处理获取的用户信息
                 displayUserInfo(user);
             })
             .catch(error => console.error('Error fetching user info: ', error));
     }
 
-
     function displayUserInfo(user) {
         // 渲染用户信息到页面上
         var mainContent = document.getElementById('userData');
         mainContent.innerHTML = ''; // 清空表格内容
-
         // 创建一个包含单行的表格
         var table = document.createElement('table');
         table.style.width = '100%';
@@ -334,49 +307,36 @@
         table.style.borderRadius = '8px';
         table.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
         var tbody = table.createTBody();
-
         var caption = table.createCaption();
         caption.innerHTML = '个人信息';
-
         caption.style.fontWeight = 'bold';
         caption.style.backgroundColor = 'rgba(255, 255, 255, 0.5)';
-
         // 遍历用户信息
         for (var key in user) {
             var tr = tbody.insertRow();
-            // 创建表格单元格
-
             switch (key) {
                 case "name":
                     var th = tr.insertCell();
                     th.innerHTML = '名字';
-                    // 创建表格值单元格
                     var td = tr.insertCell();
                     td.innerHTML = user[key];
                     break;
                 case "username":
                     var th = tr.insertCell();
                     th.innerHTML = '用户名';
-                    // 创建表格值单元格
                     var td = tr.insertCell();
                     td.innerHTML = user[key];
                     break;
                 case "userimagepath":
                     var th = tr.insertCell();
                     th.innerHTML = '用户头像';
-                    // 创建表格值单元格
                     var td = tr.insertCell();
                     td.innerHTML = `<img src="${user[key]}" alt="用户头像">`;
-                    //td.innerHTML = `<img src="${user[key]}" alt="用户头像" style="width: 50px; height: 50px;">`;
                     break;
-
             }
-
         }
-
         // 将表格添加到主内容区域
         mainContent.appendChild(table);
-
         // 显示结果区域
         var resultArea = document.getElementById('result');
         resultArea.innerHTML = '个人信息加载成功!';

@@ -125,7 +125,6 @@
 </section>
 <script>
     function clickUpload() {
-        // Event.preventDefault();
         var fileInput = document.getElementById('image-input');
         fileInput.click(); // 手动触发文件输入框的点击事件
     }
@@ -133,15 +132,11 @@
     function uploadUserImage() {
         var fileInput = document.getElementById('image-input');
         var file = fileInput.files[0];
-
         if (file) {
             var formData = new FormData();
             formData.append('image', file);
-
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/uploadUserImage', true);
-
-            // 处理上传完成后的回调
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     document.getElementById('result').innerHTML = '上传成功!';
@@ -149,8 +144,6 @@
                     document.getElementById('result').innerHTML = '上传失败!';
                 }
             };
-
-            // 发送请求
             xhr.send(formData);
         } else {
             alert('请选择要上传的图片');
@@ -163,12 +156,11 @@
             alert('名字&密码不能为空');
             return false; // 阻止表单提交
         }
-
         return true; // 允许表单提交
     }
+
     function confirmLogout() {
         var confirmLogout = confirm("您确认要注销吗？");
-
         if (confirmLogout) {
             // 用户点击了确认，执行注销操作
             fetch('/userDelete', {
@@ -192,8 +184,6 @@
         }
     }
 </script>
-
-
 </body>
 </html>
 

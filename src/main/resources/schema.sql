@@ -9,7 +9,6 @@ CREATE TABLE user (
                     PRIMARY KEY (id)
 
 );
-
 DROP TABLE IF EXISTS `food`;
 CREATE TABLE food (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -19,7 +18,6 @@ CREATE TABLE food (
                       userid BIGINT default 0,
                       FOREIGN KEY (userid) REFERENCES user(id)
 );
-
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE message (
                       id BIGINT AUTO_INCREMENT PRIMARY KEY,

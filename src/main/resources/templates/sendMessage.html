@@ -122,7 +122,6 @@
     function validateForm() {
         var acceptname = document.getElementById('acceptname').value;
         var content = document.getElementById('content').value;
-
         if (acceptname.trim() === '' || content.trim() === '') {
             alert('收件人和内容不能为空！');
             return false; // 阻止表单提交

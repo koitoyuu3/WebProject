@@ -16,11 +16,9 @@ public class User {
     private String name;        // 名字
     private String username;    // 用户名
     private String password;    // 密码
-
     private String userimagepath;   // 用户头像
 
     // 一对多
     @TableField(exist = false)
     private List<Food> foods;
-
 }

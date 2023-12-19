@@ -15,5 +15,4 @@ public class Food {
 
     @TableField("userid")
     private Long userid;
-
 }

@@ -133,7 +133,6 @@
 </section>
 <script>
     function clickUpload() {
-        // Event.preventDefault();
         var fileInput = document.getElementById('image-input');
         fileInput.click(); // 手动触发文件输入框的点击事件
     }
@@ -144,11 +143,8 @@
         if (file) {
             var formData = new FormData();
             formData.append('image', file);
-
             var xhr = new XMLHttpRequest();
             xhr.open('POST', '/uploadFoodImage', true);
-
-            // 处理上传完成后的回调
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     document.getElementById('result').innerHTML = '上传成功!';
@@ -156,23 +152,18 @@
                     document.getElementById('result').innerHTML = '上传失败!';
                 }
             };
-
-            // 发送请求
             xhr.send(formData);
         } else {
             alert('请选择要上传的图片');
         }
     }
-
     function validateForm() {
         var foodname = document.getElementById('foodname').value;
         var description = document.getElementById('description').value;
-
         if (foodname.trim() === '' || description.trim() === '') {
             alert('美食名称和描述不能为空');
             return false; // 阻止表单提交
         }
-
         return true; // 允许表单提交
     }
 </script>
